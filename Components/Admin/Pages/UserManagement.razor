@@ -1,0 +1,122 @@
+@page "/Admin/UserManagement"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using BlazorEFIdentity.Data
+@attribute [Authorize(Roles = "Admin")]
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+
+<h3>Användarhantering</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>Alla användare</h4>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Namn</th>
+                        <th>Email</th>
+                        <th>Roller</th>
+                        <th>Åtgärder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in users)
+                    {
+                        <tr>
+                            <td>@user.FirstName @user.LastName</td>
+                            <td>@user.Email</td>
+                            <td>
+                                @string.Join(", ", userRoles[user.Id])
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" @onclick="() => ShowRoleModal(user)">
+                                    Hantera roller
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@if (showRoleModal)
+{
+    <div class="modal fade show" style="display: block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hantera roller för @selectedUser?.Email</h5>
+                    <button type="button" class="btn-close" @onclick="CloseRoleModal"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var role in roles)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" 
+                                   checked="@userRoles[selectedUser.Id].Contains(role.Name)"
+                                   @onchange="async (e) => await UpdateUserRole(selectedUser, role.Name, (bool)e.Value)" />
+                            <label class="form-check-label">
+                                @role.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal">Stäng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    private List<ApplicationUser> users = new();
+    private List<IdentityRole> roles = new();
+    private Dictionary<string, List<string>> userRoles = new();
+    private bool showRoleModal;
+    private ApplicationUser selectedUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = UserManager.Users.ToList();
+        roles = RoleManager.Roles.ToList();
+        
+        foreach (var user in users)
+        {
+            var userRolesList = await UserManager.GetRolesAsync(user);
+            userRoles[user.Id] = userRolesList.ToList();
+        }
+    }
+
+    private void ShowRoleModal(ApplicationUser user)
+    {
+        selectedUser = user;
+        showRoleModal = true;
+    }
+
+    private void CloseRoleModal()
+    {
+        showRoleModal = false;
+        selectedUser = null;
+    }
+
+    private async Task UpdateUserRole(ApplicationUser user, string roleName, bool add)
+    {
+        if (add)
+        {
+            await UserManager.AddToRoleAsync(user, roleName);
+        }
+        else
+        {
+            await UserManager.RemoveFromRoleAsync(user, roleName);
+        }
+
+        // Uppdatera den lokala listan med roller
+        userRoles[user.Id] = (await UserManager.GetRolesAsync(user)).ToList();
+    }
+} 

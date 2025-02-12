@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "tevlw3MwU8oC9yPRPZEnIsu2xlZko3QnhVGynRsdqV4=",
+  "Hash": "LK+20isBKadWHlmyoRn6NJRHOo/0Ax6Hc5eMracMoec=",
   "Source": "BlazorEFIdentity",
   "BasePath": "_content/BlazorEFIdentity",
   "Mode": "Default",
@@ -17,6 +17,27 @@
   ],
   "Assets": [
     {
+      "Identity": "C:\\Users\\46706\\.nuget\\packages\\blazored.toast\\4.2.1\\staticwebassets\\Blazored.Toast.bundle.scp.css",
+      "SourceId": "Blazored.Toast",
+      "SourceType": "Package",
+      "ContentRoot": "C:\\Users\\46706\\.nuget\\packages\\blazored.toast\\4.2.1\\staticwebassets\\",
+      "BasePath": "_content/Blazored.Toast",
+      "RelativePath": "Blazored.Toast.bundle.scp.css",
+      "AssetKind": "All",
+      "AssetMode": "Reference",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "ScopedCss",
+      "AssetTraitValue": "ProjectBundle",
+      "Fingerprint": "2eijknf10w",
+      "Integrity": "Jpy8GsZRrXfBBSxMmBBAzhap27c5/Nt85Nt7V3JT3B4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\46706\\.nuget\\packages\\blazored.toast\\4.2.1\\staticwebassets\\Blazored.Toast.bundle.scp.css"
+    },
+    {
       "Identity": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BlazorEFIdentity.styles.css",
       "SourceId": "BlazorEFIdentity",
       "SourceType": "Computed",
@@ -31,8 +52,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ApplicationBundle",
-      "Fingerprint": "mhwilb9w86",
-      "Integrity": "+kVcR5E/Qc0Ku0IPQyJXSB9ow1OLwLF8dV1Z0g/BMSo=",
+      "Fingerprint": "tux2l2muyz",
+      "Integrity": "G4s5F9r7L7rOHVMvfNsmOplgj1RxZXpPfFSTPQijiRM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BlazorEFIdentity.styles.css"
@@ -122,6 +143,27 @@
       "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css.map"
     },
     {
+      "Identity": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\css\\app.css",
+      "SourceId": "BlazorEFIdentity",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\",
+      "BasePath": "_content/BlazorEFIdentity",
+      "RelativePath": "css/app#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "dgcrh7pavd",
+      "Integrity": "M0uUWsq20dn1y40nPAsXJZWDDvbaaWA7bwacakbXOjc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\app.css"
+    },
+    {
       "Identity": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\favicon.png",
       "SourceId": "BlazorEFIdentity",
       "SourceType": "Discovered",
@@ -144,6 +186,43 @@
     }
   ],
   "Endpoints": [
+    {
+      "Route": "_content/Blazored.Toast/Blazored.Toast.bundle.scp.css",
+      "AssetFile": "C:\\Users\\46706\\.nuget\\packages\\blazored.toast\\4.2.1\\staticwebassets\\Blazored.Toast.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3483"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Jpy8GsZRrXfBBSxMmBBAzhap27c5/Nt85Nt7V3JT3B4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 19 Mar 2024 16:42:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Jpy8GsZRrXfBBSxMmBBAzhap27c5/Nt85Nt7V3JT3B4="
+        }
+      ]
+    },
     {
       "Route": "app.css",
       "AssetFile": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\app.css",
@@ -309,51 +388,6 @@
       ]
     },
     {
-      "Route": "BlazorEFIdentity.mhwilb9w86.styles.css",
-      "AssetFile": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BlazorEFIdentity.styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "8203"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"+kVcR5E/Qc0Ku0IPQyJXSB9ow1OLwLF8dV1Z0g/BMSo=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 07 Feb 2025 08:56:21 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "mhwilb9w86"
-        },
-        {
-          "Name": "label",
-          "Value": "BlazorEFIdentity.styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-+kVcR5E/Qc0Ku0IPQyJXSB9ow1OLwLF8dV1Z0g/BMSo="
-        }
-      ]
-    },
-    {
       "Route": "BlazorEFIdentity.styles.css",
       "AssetFile": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BlazorEFIdentity.styles.css",
       "Selectors": [],
@@ -363,8 +397,12 @@
           "Value": "bytes"
         },
         {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
           "Name": "Content-Length",
-          "Value": "8203"
+          "Value": "8271"
         },
         {
           "Name": "Content-Type",
@@ -372,21 +410,70 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"+kVcR5E/Qc0Ku0IPQyJXSB9ow1OLwLF8dV1Z0g/BMSo=\""
+          "Value": "\"G4s5F9r7L7rOHVMvfNsmOplgj1RxZXpPfFSTPQijiRM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 07 Feb 2025 08:56:21 GMT"
+          "Value": "Wed, 12 Feb 2025 10:35:25 GMT"
         },
         {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Name": "Link",
+          "Value": "<_content/Blazored.Toast/Blazored.Toast.bundle.scp.css>; rel=\"preload\"; as=\"style\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-+kVcR5E/Qc0Ku0IPQyJXSB9ow1OLwLF8dV1Z0g/BMSo="
+          "Value": "sha256-G4s5F9r7L7rOHVMvfNsmOplgj1RxZXpPfFSTPQijiRM="
+        }
+      ]
+    },
+    {
+      "Route": "BlazorEFIdentity.tux2l2muyz.styles.css",
+      "AssetFile": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BlazorEFIdentity.styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8271"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"G4s5F9r7L7rOHVMvfNsmOplgj1RxZXpPfFSTPQijiRM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 12 Feb 2025 10:35:25 GMT"
+        },
+        {
+          "Name": "Link",
+          "Value": "<_content/Blazored.Toast/Blazored.Toast.bundle.scp.css>; rel=\"preload\"; as=\"style\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tux2l2muyz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-G4s5F9r7L7rOHVMvfNsmOplgj1RxZXpPfFSTPQijiRM="
+        },
+        {
+          "Name": "label",
+          "Value": "BlazorEFIdentity.styles.css"
         }
       ]
     },
@@ -551,6 +638,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ="
+        }
+      ]
+    },
+    {
+      "Route": "css/app.css",
+      "AssetFile": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\css\\app.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "804"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"M0uUWsq20dn1y40nPAsXJZWDDvbaaWA7bwacakbXOjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 12 Feb 2025 10:20:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-M0uUWsq20dn1y40nPAsXJZWDDvbaaWA7bwacakbXOjc="
+        }
+      ]
+    },
+    {
+      "Route": "css/app.dgcrh7pavd.css",
+      "AssetFile": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\css\\app.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "804"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"M0uUWsq20dn1y40nPAsXJZWDDvbaaWA7bwacakbXOjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 12 Feb 2025 10:20:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dgcrh7pavd"
+        },
+        {
+          "Name": "label",
+          "Value": "css/app.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-M0uUWsq20dn1y40nPAsXJZWDDvbaaWA7bwacakbXOjc="
         }
       ]
     },

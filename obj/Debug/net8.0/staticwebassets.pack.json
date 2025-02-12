@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
     },
     {
+      "Id": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\css\\app.css",
+      "PackagePath": "staticwebassets\\css\\app.css"
+    },
+    {
       "Id": "C:\\Users\\46706\\Desktop\\Development\\Projekt\\OOP Fortsättning\\BlazorEFIdentity-main\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
     },

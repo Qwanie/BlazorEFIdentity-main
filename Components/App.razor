@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using BlazorEFIdentity.Components.Layout
+@using BlazorEFIdentity.Components.Account
+@using BlazorEFIdentity.Components.Account.Pages
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,7 +17,24 @@
 </head>
 
 <body>
-    <Routes />
+    <CascadingAuthenticationState>
+        <Router AppAssembly="@typeof(App).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <RedirectToLogin />
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </CascadingAuthenticationState>
     <script src="_framework/blazor.web.js"></script>
 </body>
 

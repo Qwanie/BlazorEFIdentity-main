@@ -71,37 +71,35 @@ namespace BlazorEFIdentity
             app.MapAdditionalIdentityEndpoints();
 
             using (var scope = app.Services.CreateScope())
-            
             {
-                var roleManager = 
-                    scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    var roles = new[] { "Admin", "User"};
-                    foreach (var role in roles)
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                // Skapa Admin-roll om den inte finns
+                if (!await roleManager.RoleExistsAsync("Admin"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                }
+
+                // Skapa en admin-användare om den inte finns
+                var adminEmail = "admin@example.com";
+                if (await userManager.FindByEmailAsync(adminEmail) == null)
+                {
+                    var adminUser = new ApplicationUser
                     {
-                        if (!await roleManager.RoleExistsAsync(role))
-                        {
-                            await roleManager.CreateAsync(new IdentityRole(role));
-                        }
+                        UserName = adminEmail,
+                        Email = adminEmail,
+                        EmailConfirmed = true,
+                        FirstName = "Admin",
+                        LastName = "User"
+                    };
+
+                    var result = await userManager.CreateAsync(adminUser, "Admin123!");
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(adminUser, "Admin");
                     }
-            }
-
-            using (var scope = app.Services.CreateScope())
-            
-            {
-                var userManager = 
-                    scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    string email = "admin@admin.se";
-                    string password = "Abc123!";
-
-                   if (await userManager.FindByEmailAsync(email) == null)
-                   {
-                    var user = new ApplicationUser();
-                    user.UserName = email;
-                    user.Email = email;
-
-                    await userManager.CreateAsync(user, password);
-                    await userManager.AddToRoleAsync(user, "Admin");
-                   }
+                }
             }
 
             app.Run();

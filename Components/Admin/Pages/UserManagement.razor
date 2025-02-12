@@ -2,76 +2,166 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using BlazorEFIdentity.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.JSInterop
 @attribute [Authorize(Roles = "Admin")]
 @inject UserManager<ApplicationUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
+@inject IJSRuntime JS
 
-<h3>Användarhantering</h3>
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Användarhantering</h3>
+        </div>
+        <div class="col text-end">
+            <button class="btn btn-primary" @onclick="ShowNewRoleModal" @onclick:preventDefault>
+                <i class="bi bi-plus-circle"></i> Skapa ny roll
+            </button>
+        </div>
+    </div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h4>Alla användare</h4>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Namn</th>
-                        <th>Email</th>
-                        <th>Roller</th>
-                        <th>Åtgärder</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var user in users)
-                    {
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                            <td>@user.FirstName @user.LastName</td>
-                            <td>@user.Email</td>
-                            <td>
-                                @string.Join(", ", userRoles[user.Id])
-                            </td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" @onclick="() => ShowRoleModal(user)">
-                                    Hantera roller
-                                </button>
-                            </td>
+                            <th>Namn</th>
+                            <th>Email</th>
+                            <th>Roller</th>
+                            <th>Status</th>
+                            <th>Åtgärder</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in users)
+                        {
+                            <tr>
+                                <td>@user.FirstName @user.LastName</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    @foreach (var role in userRoles[user.Id])
+                                    {
+                                        <span class="badge bg-primary me-1">@role</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.EmailConfirmed)
+                                    {
+                                        <span class="badge bg-success">Verifierad</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Ej verifierad</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary btn-sm" @onclick="() => ShowRoleModal(user)" @onclick:preventDefault>
+                                            <i class="bi bi-person-gear"></i> Hantera roller
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeleteConfirmation(user)" @onclick:preventDefault>
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
-@if (showRoleModal)
+@if (showRoleModal && selectedUser != null)
 {
-    <div class="modal fade show" style="display: block" tabindex="-1">
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal show d-block" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Hantera roller för @selectedUser?.Email</h5>
-                    <button type="button" class="btn-close" @onclick="CloseRoleModal"></button>
+                    <h5 class="modal-title">Hantera roller för @selectedUser.Email</h5>
+                    <button type="button" class="btn-close" @onclick="CloseRoleModal" @onclick:preventDefault></button>
                 </div>
                 <div class="modal-body">
+                    @if (errorMessage != null)
+                    {
+                        <div class="alert alert-danger">@errorMessage</div>
+                    }
                     @foreach (var role in roles)
                     {
-                        <div class="form-check">
+                        <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" 
-                                   checked="@userRoles[selectedUser.Id].Contains(role.Name)"
-                                   @onchange="async (e) => await UpdateUserRole(selectedUser, role.Name, (bool)e.Value)" />
+                                   checked="@(role.Name != null && userRoles[selectedUser.Id].Contains(role.Name))"
+                                   @onchange="@(async (ChangeEventArgs e) => await UpdateUserRole(selectedUser, role.Name ?? "", Convert.ToBoolean(e.Value)))"
+                                   disabled="@(role.Name == "Admin" && selectedUser.Email == "admin@example.com")" />
                             <label class="form-check-label">
-                                @role.Name
+                                @(role.Name ?? "Unnamed Role")
                             </label>
                         </div>
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal">Stäng</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal" @onclick:preventDefault>Stäng</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal-backdrop fade show"></div>
+}
+
+@if (showNewRoleModal)
+{
+    <div class="modal show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Skapa ny roll</h5>
+                    <button type="button" class="btn-close" @onclick="CloseNewRoleModal" @onclick:preventDefault></button>
+                </div>
+                <div class="modal-body">
+                    @if (errorMessage != null)
+                    {
+                        <div class="alert alert-danger">@errorMessage</div>
+                    }
+                    <div class="form-group">
+                        <label>Rollnamn</label>
+                        <input type="text" class="form-control" @bind="newRoleName" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseNewRoleModal" @onclick:preventDefault>Avbryt</button>
+                    <button type="button" class="btn btn-primary" @onclick="CreateNewRole" @onclick:preventDefault>Skapa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (showDeleteConfirmation)
+{
+    <div class="modal show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bekräfta borttagning</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDeleteConfirmation" @onclick:preventDefault></button>
+                </div>
+                <div class="modal-body">
+                    <p>Är du säker på att du vill ta bort användaren @selectedUser?.Email?</p>
+                    @if (errorMessage != null)
+                    {
+                        <div class="alert alert-danger">@errorMessage</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteConfirmation" @onclick:preventDefault>Avbryt</button>
+                    <button type="button" class="btn btn-danger" @onclick="DeleteUser" @onclick:preventDefault>Ta bort</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @code {
@@ -79,44 +169,178 @@
     private List<IdentityRole> roles = new();
     private Dictionary<string, List<string>> userRoles = new();
     private bool showRoleModal;
-    private ApplicationUser selectedUser;
+    private bool showNewRoleModal;
+    private bool showDeleteConfirmation;
+    private ApplicationUser? selectedUser;
+    private string newRoleName = "";
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        users = UserManager.Users.ToList();
-        roles = RoleManager.Roles.ToList();
+        try 
+        {
+            // Hämta alla användare
+            users = await UserManager.Users.ToListAsync();
+            
+            // Hämta alla roller
+            roles = await RoleManager.Roles.ToListAsync();
+            
+            // Hämta roller för varje användare
+            foreach (var user in users)
+            {
+                userRoles[user.Id] = (await UserManager.GetRolesAsync(user)).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Ett fel uppstod vid laddning av data.";
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task ShowRoleModal(ApplicationUser user)
+    {
+        selectedUser = user;
+        showRoleModal = true;
+        await JS.InvokeVoidAsync("console.log", "Opening role modal for: " + user.Email);
+        StateHasChanged();
+    }
+
+    private async Task CloseRoleModal()
+    {
+        showRoleModal = false;
+        selectedUser = null;
+        await JS.InvokeVoidAsync("console.log", "Closing role modal");
+        StateHasChanged();
+    }
+
+    private async Task ShowNewRoleModal()
+    {
+        showNewRoleModal = true;
+        newRoleName = "";
+        await JS.InvokeVoidAsync("console.log", "Opening new role modal");
+        StateHasChanged();
+    }
+
+    private async Task CloseNewRoleModal()
+    {
+        showNewRoleModal = false;
+        await JS.InvokeVoidAsync("console.log", "Closing new role modal");
+        StateHasChanged();
+    }
+
+    private async Task ShowDeleteConfirmation(ApplicationUser user)
+    {
+        if (user.Email == "admin@example.com")
+        {
+            errorMessage = "Huvudadmin-kontot kan inte tas bort.";
+            return;
+        }
+        selectedUser = user;
+        showDeleteConfirmation = true;
+        await JS.InvokeVoidAsync("console.log", "Opening delete confirmation for: " + user.Email);
+        StateHasChanged();
+    }
+
+    private async Task CloseDeleteConfirmation()
+    {
+        showDeleteConfirmation = false;
+        selectedUser = null;
+        await JS.InvokeVoidAsync("console.log", "Closing delete confirmation");
+        StateHasChanged();
+    }
+
+    private async Task UpdateUserRole(ApplicationUser user, string roleName, bool add)
+    {
+        try
+        {
+            if (user.Email == "admin@example.com" && roleName == "Admin" && !add)
+            {
+                errorMessage = "Kan inte ta bort Admin-rollen från huvudadmin-kontot.";
+                return;
+            }
+
+            if (add)
+            {
+                await UserManager.AddToRoleAsync(user, roleName);
+            }
+            else
+            {
+                await UserManager.RemoveFromRoleAsync(user, roleName);
+            }
+
+            userRoles[user.Id] = (await UserManager.GetRolesAsync(user)).ToList();
+            errorMessage = null;
+            StateHasChanged();
+        }
+        catch
+        {
+            errorMessage = "Ett fel uppstod vid uppdatering av roller.";
+            StateHasChanged();
+        }
+    }
+
+    private async Task CreateNewRole()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(newRoleName))
+            {
+                errorMessage = "Rollnamnet kan inte vara tomt.";
+                return;
+            }
+
+            var result = await RoleManager.CreateAsync(new IdentityRole(newRoleName));
+            if (result.Succeeded)
+            {
+                await RefreshData();
+                CloseNewRoleModal();
+            }
+            else
+            {
+                errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+            }
+        }
+        catch
+        {
+            errorMessage = "Ett fel uppstod vid skapande av roll.";
+        }
+    }
+
+    private async Task DeleteUser()
+    {
+        try
+        {
+            if (selectedUser != null)
+            {
+                var result = await UserManager.DeleteAsync(selectedUser);
+                if (result.Succeeded)
+                {
+                    await RefreshData();
+                    CloseDeleteConfirmation();
+                }
+                else
+                {
+                    errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+                }
+            }
+        }
+        catch
+        {
+            errorMessage = "Ett fel uppstod vid borttagning av användaren.";
+        }
+    }
+
+    private async Task RefreshData()
+    {
+        users = await UserManager.Users.ToListAsync();
+        roles = await RoleManager.Roles.ToListAsync();
+        userRoles.Clear();
         
         foreach (var user in users)
         {
             var userRolesList = await UserManager.GetRolesAsync(user);
             userRoles[user.Id] = userRolesList.ToList();
         }
-    }
-
-    private void ShowRoleModal(ApplicationUser user)
-    {
-        selectedUser = user;
-        showRoleModal = true;
-    }
-
-    private void CloseRoleModal()
-    {
-        showRoleModal = false;
-        selectedUser = null;
-    }
-
-    private async Task UpdateUserRole(ApplicationUser user, string roleName, bool add)
-    {
-        if (add)
-        {
-            await UserManager.AddToRoleAsync(user, roleName);
-        }
-        else
-        {
-            await UserManager.RemoveFromRoleAsync(user, roleName);
-        }
-
-        // Uppdatera den lokala listan med roller
-        userRoles[user.Id] = (await UserManager.GetRolesAsync(user)).ToList();
     }
 } 

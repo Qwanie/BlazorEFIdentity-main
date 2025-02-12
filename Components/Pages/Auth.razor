@@ -8,6 +8,12 @@
 
 <h1>You are authenticated</h1>
 
-<AuthorizeView>
-    Hello @context.User.Identity?.Name!
+<AuthorizeView Roles="Admin">
+    Hello @context.User.Identity?.Name. You can only read this since you're admin. 
 </AuthorizeView>
+
+<AuthorizeView>
+    Hello @context.User.Identity?.Name. You can only read this since you're user.
+</AuthorizeView>
+
+

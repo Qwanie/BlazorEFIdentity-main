@@ -24,6 +24,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBY2NvdW50XFBhZ2VzXEFjY2Vzc0RlbmllZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/46706/Desktop/Development/Projekt/OOP Fortsättning/BlazorEFIdentity-main/Components/Account/Pages/AccountDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBY2NvdW50XFBhZ2VzXEFjY291bnREZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/46706/Desktop/Development/Projekt/OOP Fortsättning/BlazorEFIdentity-main/Components/Account/Pages/ConfirmEmail.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBY2NvdW50XFBhZ2VzXENvbmZpcm1FbWFpbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -178,6 +182,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/46706/Desktop/Development/Projekt/OOP Fortsättning/BlazorEFIdentity-main/Components/Account/Shared/StatusMessage.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBY2NvdW50XFNoYXJlZFxTdGF0dXNNZXNzYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/46706/Desktop/Development/Projekt/OOP Fortsättning/BlazorEFIdentity-main/Components/Admin/Pages/AccountManagement.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBZG1pblxQYWdlc1xBY2NvdW50TWFuYWdlbWVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/46706/Desktop/Development/Projekt/OOP Fortsättning/BlazorEFIdentity-main/Components/Admin/Pages/UserManagement.razor]

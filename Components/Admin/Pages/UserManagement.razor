@@ -13,11 +13,11 @@
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col">
-            <h3>Användarhantering</h3>
+            <h3>User Management</h3>
         </div>
         <div class="col text-end">
             <button class="btn btn-primary" @onclick="ShowNewRoleModal" @onclick:preventDefault>
-                <i class="bi bi-plus-circle"></i> Skapa ny roll
+                <i class="bi bi-plus-circle"></i> Create New Role
             </button>
         </div>
     </div>
@@ -28,11 +28,11 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Namn</th>
+                            <th>Name</th>
                             <th>Email</th>
-                            <th>Roller</th>
+                            <th>Roles</th>
                             <th>Status</th>
-                            <th>Åtgärder</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,17 +50,17 @@
                                 <td>
                                     @if (user.EmailConfirmed)
                                     {
-                                        <span class="badge bg-success">Verifierad</span>
+                                        <span class="badge bg-success">Verified</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-warning">Ej verifierad</span>
+                                        <span class="badge bg-warning">Not Verified</span>
                                     }
                                 </td>
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn btn-primary btn-sm" @onclick="() => ShowRoleModal(user)" @onclick:preventDefault>
-                                            <i class="bi bi-person-gear"></i> Hantera roller
+                                            <i class="bi bi-person-gear"></i> Manage Roles
                                         </button>
                                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeleteConfirmation(user)" @onclick:preventDefault>
                                             <i class="bi bi-trash"></i>
@@ -83,7 +83,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Hantera roller för @selectedUser.Email</h5>
+                    <h5 class="modal-title">Manage Roles for @selectedUser.Email</h5>
                     <button type="button" class="btn-close" @onclick="CloseRoleModal" @onclick:preventDefault></button>
                 </div>
                 <div class="modal-body">
@@ -105,7 +105,7 @@
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal" @onclick:preventDefault>Stäng</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal" @onclick:preventDefault>Close</button>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Skapa ny roll</h5>
+                    <h5 class="modal-title">Create New Role</h5>
                     <button type="button" class="btn-close" @onclick="CloseNewRoleModal" @onclick:preventDefault></button>
                 </div>
                 <div class="modal-body">
@@ -127,13 +127,13 @@
                         <div class="alert alert-danger">@errorMessage</div>
                     }
                     <div class="form-group">
-                        <label>Rollnamn</label>
+                        <label>Role Name</label>
                         <input type="text" class="form-control" @bind="newRoleName" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseNewRoleModal" @onclick:preventDefault>Avbryt</button>
-                    <button type="button" class="btn btn-primary" @onclick="CreateNewRole" @onclick:preventDefault>Skapa</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseNewRoleModal" @onclick:preventDefault>Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="CreateNewRole" @onclick:preventDefault>Create</button>
                 </div>
             </div>
         </div>
@@ -146,19 +146,19 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Bekräfta borttagning</h5>
+                    <h5 class="modal-title">Confirm Deletion</h5>
                     <button type="button" class="btn-close" @onclick="CloseDeleteConfirmation" @onclick:preventDefault></button>
                 </div>
                 <div class="modal-body">
-                    <p>Är du säker på att du vill ta bort användaren @selectedUser?.Email?</p>
+                    <p>Are you sure you want to delete user @selectedUser?.Email?</p>
                     @if (errorMessage != null)
                     {
                         <div class="alert alert-danger">@errorMessage</div>
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteConfirmation" @onclick:preventDefault>Avbryt</button>
-                    <button type="button" class="btn btn-danger" @onclick="DeleteUser" @onclick:preventDefault>Ta bort</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteConfirmation" @onclick:preventDefault>Cancel</button>
+                    <button type="button" class="btn btn-danger" @onclick="DeleteUser" @onclick:preventDefault>Delete</button>
                 </div>
             </div>
         </div>
@@ -194,7 +194,7 @@
         }
         catch (Exception ex)
         {
-            errorMessage = "Ett fel uppstod vid laddning av data.";
+            errorMessage = "An error occurred while loading data.";
             Console.WriteLine(ex.Message);
         }
     }
@@ -234,7 +234,7 @@
     {
         if (user.Email == "admin@example.com")
         {
-            errorMessage = "Huvudadmin-kontot kan inte tas bort.";
+            errorMessage = "Cannot remove Admin role from main admin account.";
             return;
         }
         selectedUser = user;
@@ -257,7 +257,7 @@
         {
             if (user.Email == "admin@example.com" && roleName == "Admin" && !add)
             {
-                errorMessage = "Kan inte ta bort Admin-rollen från huvudadmin-kontot.";
+                errorMessage = "Cannot remove Admin role from main admin account.";
                 return;
             }
 
@@ -276,7 +276,7 @@
         }
         catch
         {
-            errorMessage = "Ett fel uppstod vid uppdatering av roller.";
+            errorMessage = "An error occurred while updating roles.";
             StateHasChanged();
         }
     }
@@ -287,7 +287,7 @@
         {
             if (string.IsNullOrWhiteSpace(newRoleName))
             {
-                errorMessage = "Rollnamnet kan inte vara tomt.";
+                errorMessage = "Role name cannot be empty.";
                 return;
             }
 
@@ -304,7 +304,7 @@
         }
         catch
         {
-            errorMessage = "Ett fel uppstod vid skapande av roll.";
+            errorMessage = "An error occurred while creating role.";
         }
     }
 
@@ -328,7 +328,7 @@
         }
         catch
         {
-            errorMessage = "Ett fel uppstod vid borttagning av användaren.";
+            errorMessage = "An error occurred while deleting user.";
         }
     }
 

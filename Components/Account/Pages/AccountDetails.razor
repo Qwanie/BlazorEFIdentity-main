@@ -1,0 +1,166 @@
+@page "/Account/Details/{AccountId:int}"
+@rendermode InteractiveServer
+@using BlazorEFIdentity.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Authorization
+@inject ApplicationDbContext Context
+@attribute [Authorize]
+
+<div class="container py-4">
+    @if (account != null)
+    {
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">@account.AccountName</h3>
+                        <span class="h4 mb-0">Balance: @account.Balance.ToString("C")</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Account Type:</strong> @account.AccountType</p>
+                                <p><strong>Account Number:</strong> @account.AccountId</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Transactions</h4>
+                        <button class="btn btn-primary" @onclick="ShowNewTransactionModal">
+                            <i class="bi bi-plus-circle"></i> New Transaction
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th class="text-end">Amount</th>
+                                        <th class="text-end">Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        decimal runningBalance = account.Balance;
+                                    }
+                                    @foreach (var transaction in transactions.OrderByDescending(t => t.Date))
+                                    {
+                                        <tr>
+                                            <td>@transaction.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td>@transaction.Description</td>
+                                            <td class="text-end @(transaction.Amount >= 0 ? "text-success" : "text-danger")">
+                                                @transaction.Amount.ToString("C")
+                                            </td>
+                                            <td class="text-end">@runningBalance.ToString("C")</td>
+                                        </tr>
+                                        runningBalance -= transaction.Amount;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (showTransactionModal)
+        {
+            <div class="modal show" style="display: block; background-color: rgba(0,0,0,0.5);">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">New Transaction</h5>
+                            <button type="button" class="btn-close" @onclick="CloseTransactionModal"></button>
+                        </div>
+                        <EditForm Model="newTransaction" OnValidSubmit="CreateTransaction">
+                            <DataAnnotationsValidator />
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Amount</label>
+                                    <InputNumber @bind-Value="newTransaction.Amount" class="form-control" />
+                                    <ValidationMessage For="@(() => newTransaction.Amount)" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <InputText @bind-Value="newTransaction.Description" class="form-control" />
+                                    <ValidationMessage For="@(() => newTransaction.Description)" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @onclick="CloseTransactionModal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning">Account not found.</div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int AccountId { get; set; }
+
+    private Account? account;
+    private List<Transaction> transactions = new();
+    private bool showTransactionModal;
+    private Transaction newTransaction = new() { Description = "" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAccountData();
+    }
+
+    private async Task LoadAccountData()
+    {
+        account = await Context.Accounts
+            .Include(a => a.Transactions)
+            .FirstOrDefaultAsync(a => a.AccountId == AccountId);
+
+        if (account != null)
+        {
+            transactions = account.Transactions.ToList();
+        }
+    }
+
+    private void ShowNewTransactionModal()
+    {
+        newTransaction = new Transaction
+        {
+            Date = DateTime.Now,
+            AccountId = AccountId,
+            Description = ""
+        };
+        showTransactionModal = true;
+    }
+
+    private void CloseTransactionModal()
+    {
+        showTransactionModal = false;
+    }
+
+    private async Task CreateTransaction()
+    {
+        if (account != null)
+        {
+            account.Balance += newTransaction.Amount;
+            Context.Transactions.Add(newTransaction);
+            await Context.SaveChangesAsync();
+            
+            await LoadAccountData();
+            CloseTransactionModal();
+        }
+    }
+} 

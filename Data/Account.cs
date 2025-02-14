@@ -15,11 +15,13 @@ namespace BlazorEFIdentity.Data
         public decimal Balance { get; set; }
         public required string AccountType { get; set; }
         
-        // Navigation property to ApplicationUser
+        // Foreign key to link account to a user
         public required string ApplicationUserId { get; set; }
+
+        // Navigation property to the user who owns this account
         public ApplicationUser? ApplicationUser { get; set; }
 
-        // Collection of transactions
+        // Collection of all transactions for this account
         public ICollection<Transaction> Transactions { get; set; }
     }
 } 

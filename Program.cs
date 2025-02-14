@@ -14,14 +14,16 @@ namespace BlazorEFIdentity
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add Blazor components service
             builder.Services.AddRazorComponents();
 
+            // Add authentication services
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
+            // Configure authentication
             builder.Services.AddAuthorization();
             builder.Services.AddAuthentication(options =>
                 {
@@ -30,28 +32,28 @@ namespace BlazorEFIdentity
                 })
                 .AddIdentityCookies();
 
-            //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(connectionString));
-
+            // Configure SQLite database
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite("Data Source=sysdb.db"));
+                options.UseSqlite("Data Source=sysdb.db"));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            // Configure Identity system
             builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
+            // Add email sender service (no-op implementation for demo)
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+            // Add interactive server components
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
@@ -74,18 +76,19 @@ namespace BlazorEFIdentity
             // Add additional endpoints required by the Identity /Account Razor components.
             app.MapAdditionalIdentityEndpoints();
 
+            // Create default admin role and user if they don't exist
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-                // Skapa Admin-roll om den inte finns
+                // Create Admin role
                 if (!await roleManager.RoleExistsAsync("Admin"))
                 {
                     await roleManager.CreateAsync(new IdentityRole("Admin"));
                 }
 
-                // Skapa en admin-användare om den inte finns
+                // Create default admin user
                 var adminEmail = "admin@example.com";
                 if (await userManager.FindByEmailAsync(adminEmail) == null)
                 {

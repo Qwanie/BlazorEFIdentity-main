@@ -4,134 +4,146 @@
 @using Microsoft.AspNetCore.Identity
 @using BlazorEFIdentity.Data
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.JSInterop
 @attribute [Authorize(Roles = "Admin")]
 @inject ApplicationDbContext Context
 @inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager Navigation
+@inject IAuthorizationService AuthorizationService
 
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col">
-            <h3>Account Management</h3>
-        </div>
-        <div class="col text-end">
-            <button class="btn btn-primary" @onclick="ShowNewAccountModal">
-                <i class="bi bi-plus-circle"></i> Create New Account
-            </button>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Account Name</th>
-                            <th>Account Type</th>
-                            <th>Owner</th>
-                            <th class="text-end">Balance</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var account in accounts)
-                        {
-                            <tr>
-                                <td>@account.AccountName</td>
-                                <td>@account.AccountType</td>
-                                <td>@(account.ApplicationUser?.Email ?? "N/A")</td>
-                                <td class="text-end">@account.Balance.ToString("C")</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="/Account/Details/@account.AccountId" class="btn btn-info btn-sm">
-                                            <i class="bi bi-eye"></i> View
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeleteConfirmation(account)">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if (showNewAccountModal)
-{
-    <div class="modal show" style="display: block; background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Create New Account</h5>
-                    <button type="button" class="btn-close" @onclick="CloseNewAccountModal"></button>
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col">
+                    <h3>Account Management</h3>
                 </div>
-                <EditForm Model="newAccount" OnValidSubmit="CreateAccount">
-                    <DataAnnotationsValidator />
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Account Name</label>
-                            <InputText @bind-Value="newAccount.AccountName" class="form-control" />
-                            <ValidationMessage For="@(() => newAccount.AccountName)" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Account Type</label>
-                            <InputText @bind-Value="newAccount.AccountType" class="form-control" />
-                            <ValidationMessage For="@(() => newAccount.AccountType)" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">User</label>
-                            <InputSelect @bind-Value="newAccount.ApplicationUserId" class="form-control">
-                                <option value="">Select User...</option>
-                                @foreach (var user in users)
+                <div class="col text-end">
+                    <button class="btn btn-primary" @onclick="ShowNewAccountModal">
+                        <i class="bi bi-plus-circle"></i> Create New Account
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Account Name</th>
+                                    <th>Account Type</th>
+                                    <th>Owner</th>
+                                    <th class="text-end">Balance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var account in accounts)
                                 {
-                                    <option value="@user.Id">@user.Email</option>
+                                    <tr>
+                                        <td>@account.AccountName</td>
+                                        <td>@account.AccountType</td>
+                                        <td>@(account.ApplicationUser?.Email ?? "N/A")</td>
+                                        <td class="text-end">@account.Balance.ToString("C")</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/Account/Details/@account.AccountId" class="btn btn-info btn-sm">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <button class="btn btn-danger btn-sm" @onclick="() => ShowDeleteConfirmation(account)">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 }
-                            </InputSelect>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Initial Balance</label>
-                            <InputNumber @bind-Value="newAccount.Balance" class="form-control" />
-                            <ValidationMessage For="@(() => newAccount.Balance)" />
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @onclick="CloseNewAccountModal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                </EditForm>
+                </div>
             </div>
         </div>
-    </div>
-}
 
-@if (showDeleteConfirmation)
-{
-    <div class="modal show" style="display: block; background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" @onclick="CloseDeleteConfirmation"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete account @selectedAccount?.AccountName?</p>
-                    @if (errorMessage != null)
-                    {
-                        <div class="alert alert-danger">@errorMessage</div>
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteConfirmation">Cancel</button>
-                    <button type="button" class="btn btn-danger" @onclick="DeleteAccount">Delete</button>
+        @if (showNewAccountModal)
+        {
+            <div class="modal show" style="display: block; background-color: rgba(0,0,0,0.5);">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Create New Account</h5>
+                            <button type="button" class="btn-close" @onclick="CloseNewAccountModal"></button>
+                        </div>
+                        <EditForm Model="newAccount" OnValidSubmit="CreateAccount" Context="editFormContext">
+                            <DataAnnotationsValidator />
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Account Name</label>
+                                    <InputText @bind-Value="newAccount.AccountName" class="form-control" />
+                                    <ValidationMessage For="@(() => newAccount.AccountName)" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Account Type</label>
+                                    <InputText @bind-Value="newAccount.AccountType" class="form-control" />
+                                    <ValidationMessage For="@(() => newAccount.AccountType)" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">User</label>
+                                    <InputSelect @bind-Value="newAccount.ApplicationUserId" class="form-control">
+                                        <option value="">Select User...</option>
+                                        @foreach (var user in users)
+                                        {
+                                            <option value="@user.Id">@user.Email</option>
+                                        }
+                                    </InputSelect>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Initial Balance</label>
+                                    <InputNumber @bind-Value="newAccount.Balance" class="form-control" />
+                                    <ValidationMessage For="@(() => newAccount.Balance)" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @onclick="CloseNewAccountModal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
+                            </div>
+                        </EditForm>
+                    </div>
                 </div>
             </div>
+        }
+
+        @if (showDeleteConfirmation)
+        {
+            <div class="modal show" style="display: block; background-color: rgba(0,0,0,0.5);">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" @onclick="CloseDeleteConfirmation"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete account @selectedAccount?.AccountName?</p>
+                            @if (errorMessage != null)
+                            {
+                                <div class="alert alert-danger">@errorMessage</div>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CloseDeleteConfirmation">Cancel</button>
+                            <button type="button" class="btn btn-danger" @onclick="DeleteAccount">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-danger">
+            You are not authorized to view this page.
         </div>
-    </div>
-}
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<Account> accounts = new();

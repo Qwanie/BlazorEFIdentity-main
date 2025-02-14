@@ -358,3 +358,4 @@ C:\Users\46706\Desktop\Development\Projekt\OOP Fortsättning\BlazorEFIdentity-ma
 C:\Users\46706\Desktop\Development\Projekt\OOP Fortsättning\BlazorEFIdentity-main\bin\Debug\net8.0\Microsoft.AspNetCore.Components.Web.dll
 C:\Users\46706\Desktop\Development\Projekt\OOP Fortsättning\BlazorEFIdentity-main\bin\Debug\net8.0\Microsoft.AspNetCore.Metadata.dll
 C:\Users\46706\Desktop\Development\Projekt\OOP Fortsättning\BlazorEFIdentity-main\bin\Debug\net8.0\Microsoft.JSInterop.dll
+C:\Users\46706\Desktop\Development\Projekt\OOP Fortsättning\BlazorEFIdentity-main\obj\Debug\net8.0\BlazorEFIdentity.sourcelink.json

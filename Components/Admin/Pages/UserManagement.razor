@@ -9,161 +9,172 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
 @inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject IAuthorizationService AuthorizationService
 
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col">
-            <h3>User Management</h3>
-        </div>
-        <div class="col text-end">
-            <button class="btn btn-primary" @onclick="ShowNewRoleModal" @onclick:preventDefault>
-                <i class="bi bi-plus-circle"></i> Create New Role
-            </button>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Roles</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in users)
-                        {
-                            <tr>
-                                <td>@user.FirstName @user.LastName</td>
-                                <td>@user.Email</td>
-                                <td>
-                                    @foreach (var role in userRoles[user.Id])
-                                    {
-                                        <span class="badge bg-primary me-1">@role</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (user.EmailConfirmed)
-                                    {
-                                        <span class="badge bg-success">Verified</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-warning">Not Verified</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-primary btn-sm" @onclick="() => ShowRoleModal(user)" @onclick:preventDefault>
-                                            <i class="bi bi-person-gear"></i> Manage Roles
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeleteConfirmation(user)" @onclick:preventDefault>
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if (showRoleModal && selectedUser != null)
-{
-    <div class="modal-backdrop fade show"></div>
-    <div class="modal show d-block" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Manage Roles for @selectedUser.Email</h5>
-                    <button type="button" class="btn-close" @onclick="CloseRoleModal" @onclick:preventDefault></button>
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col">
+                    <h3>User Management</h3>
                 </div>
-                <div class="modal-body">
-                    @if (errorMessage != null)
-                    {
-                        <div class="alert alert-danger">@errorMessage</div>
-                    }
-                    @foreach (var role in roles)
-                    {
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" 
-                                   checked="@(role.Name != null && userRoles[selectedUser.Id].Contains(role.Name))"
-                                   @onchange="@(async (ChangeEventArgs e) => await UpdateUserRole(selectedUser, role.Name ?? "", Convert.ToBoolean(e.Value)))"
-                                   disabled="@(role.Name == "Admin" && selectedUser.Email == "admin@example.com")" />
-                            <label class="form-check-label">
-                                @(role.Name ?? "Unnamed Role")
-                            </label>
-                        </div>
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal" @onclick:preventDefault>Close</button>
+                <div class="col text-end">
+                    <button class="btn btn-primary" @onclick="ShowNewRoleModal" @onclick:preventDefault>
+                        <i class="bi bi-plus-circle"></i> Create New Role
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
-}
 
-@if (showNewRoleModal)
-{
-    <div class="modal show" tabindex="-1" style="display: block;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Create New Role</h5>
-                    <button type="button" class="btn-close" @onclick="CloseNewRoleModal" @onclick:preventDefault></button>
-                </div>
-                <div class="modal-body">
-                    @if (errorMessage != null)
-                    {
-                        <div class="alert alert-danger">@errorMessage</div>
-                    }
-                    <div class="form-group">
-                        <label>Role Name</label>
-                        <input type="text" class="form-control" @bind="newRoleName" />
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in users)
+                                {
+                                    <tr>
+                                        <td>@user.FirstName @user.LastName</td>
+                                        <td>@user.Email</td>
+                                        <td>
+                                            @foreach (var role in userRoles[user.Id])
+                                            {
+                                                <span class="badge bg-primary me-1">@role</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.EmailConfirmed)
+                                            {
+                                                <span class="badge bg-success">Verified</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">Not Verified</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-primary btn-sm" @onclick="() => ShowRoleModal(user)" @onclick:preventDefault>
+                                                    <i class="bi bi-person-gear"></i> Manage Roles
+                                                </button>
+                                                <button class="btn btn-danger btn-sm" @onclick="() => ShowDeleteConfirmation(user)" @onclick:preventDefault>
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseNewRoleModal" @onclick:preventDefault>Cancel</button>
-                    <button type="button" class="btn btn-primary" @onclick="CreateNewRole" @onclick:preventDefault>Create</button>
-                </div>
             </div>
         </div>
-    </div>
-}
 
-@if (showDeleteConfirmation)
-{
-    <div class="modal show" tabindex="-1" style="display: block;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" @onclick="CloseDeleteConfirmation" @onclick:preventDefault></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete user @selectedUser?.Email?</p>
-                    @if (errorMessage != null)
-                    {
-                        <div class="alert alert-danger">@errorMessage</div>
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteConfirmation" @onclick:preventDefault>Cancel</button>
-                    <button type="button" class="btn btn-danger" @onclick="DeleteUser" @onclick:preventDefault>Delete</button>
+        @if (showRoleModal && selectedUser != null)
+        {
+            <div class="modal-backdrop fade show"></div>
+            <div class="modal show d-block" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Manage Roles for @selectedUser.Email</h5>
+                            <button type="button" class="btn-close" @onclick="CloseRoleModal" @onclick:preventDefault></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (errorMessage != null)
+                            {
+                                <div class="alert alert-danger">@errorMessage</div>
+                            }
+                            @foreach (var role in roles)
+                            {
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" 
+                                           checked="@(role.Name != null && userRoles[selectedUser.Id].Contains(role.Name))"
+                                           @onchange="@(async (ChangeEventArgs e) => await UpdateUserRole(selectedUser, role.Name ?? "", Convert.ToBoolean(e.Value)))"
+                                           disabled="@(role.Name == "Admin" && selectedUser.Email == "admin@example.com")" />
+                                    <label class="form-check-label">
+                                        @(role.Name ?? "Unnamed Role")
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal" @onclick:preventDefault>Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+        }
+
+        @if (showNewRoleModal)
+        {
+            <div class="modal show" tabindex="-1" style="display: block;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Create New Role</h5>
+                            <button type="button" class="btn-close" @onclick="CloseNewRoleModal" @onclick:preventDefault></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (errorMessage != null)
+                            {
+                                <div class="alert alert-danger">@errorMessage</div>
+                            }
+                            <div class="form-group">
+                                <label>Role Name</label>
+                                <input type="text" class="form-control" @bind="newRoleName" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CloseNewRoleModal" @onclick:preventDefault>Cancel</button>
+                            <button type="button" class="btn btn-primary" @onclick="CreateNewRole" @onclick:preventDefault>Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (showDeleteConfirmation)
+        {
+            <div class="modal show" tabindex="-1" style="display: block;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" @onclick="CloseDeleteConfirmation" @onclick:preventDefault></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete user @selectedUser?.Email?</p>
+                            @if (errorMessage != null)
+                            {
+                                <div class="alert alert-danger">@errorMessage</div>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CloseDeleteConfirmation" @onclick:preventDefault>Cancel</button>
+                            <button type="button" class="btn btn-danger" @onclick="DeleteUser" @onclick:preventDefault>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-danger">
+            You are not authorized to view this page.
         </div>
-    </div>
-}
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<ApplicationUser> users = new();

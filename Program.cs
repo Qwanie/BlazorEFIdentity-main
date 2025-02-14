@@ -46,6 +46,9 @@ namespace BlazorEFIdentity
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+            builder.Services.AddRazorComponents()
+                .AddInteractiveServerComponents();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -65,7 +68,8 @@ namespace BlazorEFIdentity
             app.UseStaticFiles();
             app.UseAntiforgery();
 
-            app.MapRazorComponents<App>();
+            app.MapRazorComponents<App>()
+                .AddInteractiveServerRenderMode();
 
             // Add additional endpoints required by the Identity /Account Razor components.
             app.MapAdditionalIdentityEndpoints();
